@@ -27,9 +27,8 @@ const styles = {
   } as CSSProperties,
 };
 
-const CSV: FC<{setData: Dispatch<SetStateAction<never[][]>>}> = ({setData}) => {
+const CSV: FC<{setData:  Dispatch<SetStateAction<[][] | null>>}> = ({setData}) => {
   const { CSVReader } = useCSVReader();
-
 
     return (
       <CSVReader

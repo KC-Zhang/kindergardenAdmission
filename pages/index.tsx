@@ -1,35 +1,38 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import {Slider} from "@mui/material";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {useEffect, useState} from "react";
 import CSV from "../components/CSV";
-import { DataGrid } from '@mui/x-data-grid';
-import CSVDataGrid from "../components/CSVDataGrid";
-import {getRemainingAndGraduatedStudentAmounts} from "../src/calculationCore";
+import CSVDataGrid from "../components/table/CSVDataGrid";
+import {getStudentMovementsForARoom} from "../src/calculationCore";
 import {cleanupProgramNames, processCSVData} from "../src/dataCleaning";
-import {Student} from "../src/interfaces";
+import {Student, StudentMovement} from "../src/interfaces";
+import OutputDataGrid from "../components/table/outputDatagrid";
+import {Box, Flex, Grid, HStack, Spacer, VStack} from '@chakra-ui/react'
+
 
 
 const Home: NextPage = () => {
   const [pickedDate, setPickedDate] = useState<Date>(new Date());
-  const [data, setData] = useState([[]]);
+  const [data, setData] = useState<[][]|null>(null);
+  const [studentMovements, setStudentMovements] = useState<StudentMovement[]>([]);
 
   useEffect(() => {
-    if (data.length, pickedDate) {
+    if (data?.length && pickedDate) {
       const students:Student[] = processCSVData(data, pickedDate);
       const uniquePrograms = [...new Set(students.map(student => student.program))];
       const uniqueRooms = [...new Set(students.map(student => student.room))];
       console.log(`uniquePrograms`, uniquePrograms);
       console.log(`uniqueRooms`, uniqueRooms);
-      const newStudentStats = uniqueRooms.map(roomName => {
-        return getRemainingAndGraduatedStudentAmounts(pickedDate, roomName, students);
+      const studentMovementsForAllRooms = uniqueRooms.map(roomName => {
+        return {
+          room: roomName,
+          ...getStudentMovementsForARoom(pickedDate, roomName,students)
         }
-      )
-      console.log(`newStudentStats`, newStudentStats);
+      });
+      setStudentMovements(studentMovementsForAllRooms);
+      console.log(`newStudentStats`, studentMovementsForAllRooms);
     }
   }, [data, pickedDate])
 
@@ -54,8 +57,36 @@ const Home: NextPage = () => {
           Upload CSV file
         </div>
         <CSV setData={setData}></CSV>
-        <CSVDataGrid data={data}></CSVDataGrid>
+        {data
+          ? <CSVDataGrid data={data} title={'Raw Input Data'}></CSVDataGrid>
+          : <></>
+        }
 
+        {/*<Flex>*/}
+        {/*  <Box p='4' bg='red.400'>*/}
+        {/*    Box 1*/}
+        {/*  </Box>*/}
+        {/*  <Spacer />*/}
+        {/*  <Box p='4' bg='green.400'>*/}
+        {/*    Box 2*/}
+        {/*  </Box>*/}
+        {/*</Flex>*/}
+        <VStack>
+        {studentMovements.length
+          ? studentMovements.map((studentMovement, index) => {
+            return (
+              <HStack key={index} style={{width:'100%'}}>
+                <Box>
+                        <OutputDataGrid students={studentMovement.remainingStudents} title={studentMovement.room}></OutputDataGrid>
+                </Box>
+                <Box>
+                        <OutputDataGrid students={studentMovement.graduatedStudents} title={studentMovement.room}></OutputDataGrid>
+                </Box>
+              </HStack>)
+          })
+          : <></>
+        }
+        </VStack>
       </main>
     </div>
   )

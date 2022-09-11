@@ -13,5 +13,8 @@ export interface Student {
   age: number;
 }
 
-
-
+export interface StudentMovement {
+  room: string;
+  remainingStudents:Student[];
+  graduatedStudents:Student[]
+}
