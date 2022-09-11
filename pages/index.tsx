@@ -5,25 +5,34 @@ import styles from '../styles/Home.module.css'
 import {Slider} from "@mui/material";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import CSV from "../components/CSV";
 import { DataGrid } from '@mui/x-data-grid';
 import CSVDataGrid from "../components/CSVDataGrid";
+import {getRemainingAndGraduatedStudentAmounts} from "../src/calculationCore";
+import {cleanupProgramNames, processCSVData} from "../src/dataCleaning";
+import {Student} from "../src/interfaces";
 
-const calculateStudents = (data: string[][], date:Date) => {
-  const students = data.slice(1).map((row) => {
-    const DOB = new Date(row[5]);
-    const startDate = new Date(row[6]);
-    if (DOB > date || startDate > date) {
-      return 0;
-    }
-    return 1;
-  }).reduce((a, b) => a + b, 0);
-  return students;
-}
+
 const Home: NextPage = () => {
-  const [pickedDate, setPickedDate] = useState(new Date());
+  const [pickedDate, setPickedDate] = useState<Date>(new Date());
   const [data, setData] = useState([[]]);
+
+  useEffect(() => {
+    if (data.length, pickedDate) {
+      const students:Student[] = processCSVData(data, pickedDate);
+      const uniquePrograms = [...new Set(students.map(student => student.program))];
+      const uniqueRooms = [...new Set(students.map(student => student.room))];
+      console.log(`uniquePrograms`, uniquePrograms);
+      console.log(`uniqueRooms`, uniqueRooms);
+      const newStudentStats = uniqueRooms.map(roomName => {
+        return getRemainingAndGraduatedStudentAmounts(pickedDate, roomName, students);
+        }
+      )
+      console.log(`newStudentStats`, newStudentStats);
+    }
+  }, [data, pickedDate])
+
   return (
     <div className={styles.container}>
 
@@ -36,7 +45,7 @@ const Home: NextPage = () => {
           <div>
             <DatePicker
               selected={pickedDate} onChange={(date:Date) => setPickedDate(date)} />
-            {pickedDate.toLocaleDateString()}
+            {pickedDate?.toDateString()}
           </div>
 
         </div>

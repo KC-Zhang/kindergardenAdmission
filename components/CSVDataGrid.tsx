@@ -16,6 +16,8 @@ const columns: GridColDef[] = [
     headerName: 'Last name',
     width: 150,
     editable: false,
+    sortable: true,
+
   },
   {
     field: 'rooms',
@@ -23,12 +25,14 @@ const columns: GridColDef[] = [
     type: 'string',
     width: 110,
     editable: false,
+    sortable: true,
+
   },
   {
     field: 'programs',
     headerName: 'Programs',
     width: 160,
-    sortable: false,
+    sortable: true,
   },
   {
     field: 'DOB',
@@ -68,6 +72,7 @@ const CSVDataGrid:FC<{data:never[][]}> =({data})=> {
   useEffect(() => {
     const rows = formatData(data)
     console.log(rows)
+    // @ts-ignore20
     setRows(rows)
   }, [data])
   return (
@@ -75,7 +80,7 @@ const CSVDataGrid:FC<{data:never[][]}> =({data})=> {
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSize={5}
+        pageSize={30}
         rowsPerPageOptions={[5]}
         checkboxSelection
         disableSelectionOnClick
