@@ -15,7 +15,7 @@ const getUniquelyMatchedProgramName = (student:Student) =>{
   }
 }
 
-const getMatchedPrograms = (programNameRaw:string) => {
+export const getMatchedPrograms = (programNameRaw:string) => {
   const matchedPrograms = programs.filter(program => {
     return programNameRaw.includes(program)
   })

@@ -6,11 +6,12 @@ import { useEffect, useState } from "react";
 import CSV from "../components/CSV";
 import CSVDataGrid from "../components/table/CSVDataGrid";
 import { getStudentMovementsForARoom } from "../src/calculationCore";
-import { cleanupProgramNames, processCSVData } from "../src/dataCleaning";
+import {cleanupProgramNames, getMatchedPrograms, processCSVData} from "../src/dataCleaning";
 import { Student, StudentMovement } from "../src/interfaces";
 import OutputDataGrid from "../components/table/outputDatagrid";
 import { Grid } from "@mui/material";
 import {programAgeRange} from "../src/configs";
+import {sortBy} from "lodash";
 
 const Home: NextPage = () => {
   const [pickedDate, setPickedDate] = useState<Date>(new Date());
@@ -34,7 +35,8 @@ const Home: NextPage = () => {
           ...getStudentMovementsForARoom(pickedDate, roomName, students),
         };
       });
-      setStudentMovements(studentMovementsForAllRooms);
+      const sorted =  sortBy(studentMovementsForAllRooms, [(studentMovement) => programAgeRange[getMatchedPrograms(studentMovement.room)[0]]?.min||0, 'room']);
+      setStudentMovements(sorted);
       console.log(`newStudentStats`, studentMovementsForAllRooms);
     }
   }, [data, pickedDate]);
@@ -50,7 +52,9 @@ const Home: NextPage = () => {
             selected={pickedDate}
             onChange={(date: Date) => setPickedDate(date)}
           />
-          {pickedDate?.toDateString()}
+          {pickedDate?
+            'Target Date: ' + pickedDate.toDateString()
+            :null}
         </div>
 
         <h1>Upload CSV file</h1>
@@ -62,19 +66,19 @@ const Home: NextPage = () => {
         )}
 
         {studentMovements.length ? (
-          studentMovements.sort((studentmovement)=>programAgeRange[studentmovement.remainingStudents[0].program].min).map((studentMovement, index) => {
+          studentMovements.map((studentMovement, index) => {
             return (
               <Grid container spacing={2} key={index}>
                 <Grid item xs={6}>
                   <OutputDataGrid
                     students={studentMovement.remainingStudents}
-                    title={studentMovement.room}
+                    title={studentMovement.room + " Remaining"}
                   ></OutputDataGrid>
                 </Grid>
                 <Grid item xs={6}>
                   <OutputDataGrid
                     students={studentMovement.graduatedStudents}
-                    title={studentMovement.room}
+                    title={studentMovement.room + " Graduated"}
                   ></OutputDataGrid>
                 </Grid>
               </Grid>

@@ -23,7 +23,7 @@ const OutputDataGrid: FC<{ students: Student[]; title: string }> = ({
   console.log(students)
   return (
     <Box sx={{ height: 400, width: "100%", marginBottom: 20 }}>
-      <header style={{ height: 80, width: "50%", fontSize: "xxx-large" }}>
+      <header style={{ height: 80, width: "100%", fontSize: "xxx-large" }}>
         {title}{" "}
       </header>
       <DataGrid
