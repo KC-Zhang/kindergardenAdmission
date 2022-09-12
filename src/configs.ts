@@ -1,7 +1,7 @@
 import {Program} from "./interfaces";
 
 export const programAgeRange = {
-  'CEFA Baby': {
+  'Baby': {
     min: 1,
     max: 2
   },
