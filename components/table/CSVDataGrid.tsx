@@ -1,9 +1,8 @@
-import * as React from 'react';
-import {FC, useEffect} from 'react';
-import Box from '@mui/material/Box';
-import {DataGrid} from '@mui/x-data-grid';
-import {columns} from "./common";
-
+import * as React from "react";
+import { FC, useEffect } from "react";
+import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
+import { columns } from "./common";
 
 const formatData = (data: string[][]) => {
   return data.slice(1).map((row, index) => {
@@ -14,24 +13,29 @@ const formatData = (data: string[][]) => {
       program: row[3],
       dateOfBirth: new Date(row[5]),
       startDate: new Date(row[6]),
-      id: index
-    }
+      id: index,
+    };
     return newRow;
-  })
-}
+  });
+};
 
-const CSVDataGrid:FC<{data:never[][], title:string}> =({data, title})=> {
+const CSVDataGrid: FC<{ data: never[][]; title: string }> = ({
+  data,
+  title,
+}) => {
   const [rows, setRows] = React.useState([]);
+  console.log('input', rows)
   useEffect(() => {
-    const rows = formatData(data)
-    console.log(rows)
+    const rows = formatData(data);
+    console.log(rows);
     // @ts-ignore20
-    setRows(rows)
-  }, [data])
+    setRows(rows);
+  }, [data]);
   return (
-    <Box sx={{ height: 400, width: '80%', marginBottom:20}}>
-      <header style={{ height: 80, width: '100%', fontSize:"xxx-large"}}>
-        {title} </header>
+    <Box sx={{ height: 400, width: "100%", marginBottom: 20 }}>
+      <header style={{ height: 80, width: "100%", fontSize: "xxx-large" }}>
+        {title}{" "}
+      </header>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -43,6 +47,6 @@ const CSVDataGrid:FC<{data:never[][], title:string}> =({data, title})=> {
       />
     </Box>
   );
-}
+};
 
 export default CSVDataGrid;

@@ -24,7 +24,7 @@ const getMatchedPrograms = (programNameRaw:string) => {
 
 
 export const processCSVData = (csvData: string[][], selectedDate: Date) => {
-  const studentsRaw = csvData.slice(1).map((row) => {
+  const studentsRaw = csvData.slice(1).map((row, index) => {
     const DOB = new Date(row[columnNumberMapping.dateOfBirth]);
     const age = calculateAge(DOB, selectedDate);
     return {
@@ -33,8 +33,8 @@ export const processCSVData = (csvData: string[][], selectedDate: Date) => {
       room: row[columnNumberMapping.room],
       program: row[columnNumberMapping.program],
       dateOfBirth: DOB,
-      startDate: new Date(columnNumberMapping.startDate),
-      id: 0,
+      startDate: new Date(row[columnNumberMapping.startDate]),
+      id: index,
       age,
     }
   })

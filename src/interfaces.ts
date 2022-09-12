@@ -9,7 +9,6 @@ export interface Student {
   program: Program;
   dateOfBirth: Date;
   startDate: Date;
-  id: number;
   age: number;
 }
 
