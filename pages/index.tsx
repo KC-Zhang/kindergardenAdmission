@@ -24,31 +24,31 @@ const Home: NextPage = () => {
     []
   );
 
-  // useEffect(() => {
-  //   if (data?.length && pickedDate) {
-  //     const students: Student[] = processCSVData(data, pickedDate);
-  //     const uniquePrograms = [
-  //       ...new Set(students.map((student) => student.program)),
-  //     ];
-  //     const uniqueRooms = [...new Set(students.map((student) => student.room))];
-  //     console.log(`uniquePrograms`, uniquePrograms);
-  //     console.log(`uniqueRooms`, uniqueRooms);
-  //     const studentMovementsForAllRooms = uniqueRooms.map((roomName) => {
-  //       return {
-  //         room: roomName,
-  //         ...getStudentMovementsForARoom(pickedDate, roomName, students),
-  //       };
-  //     });
-  //     const sorted = sortBy(studentMovementsForAllRooms, [
-  //       (studentMovement) =>
-  //         programAgeRange[getMatchedPrograms(studentMovement.room)[0]]?.min ||
-  //         0,
-  //       "room",
-  //     ]);
-  //     setStudentMovements(sorted);
-  //     console.log(`newStudentStats`, studentMovementsForAllRooms);
-  //   }
-  // }, [data, pickedDate]);
+  useEffect(() => {
+    if (data?.length && pickedDate) {
+      const students: Student[] = processCSVData(data, pickedDate);
+      const uniquePrograms = [
+        ...new Set(students.map((student) => student.program)),
+      ];
+      const uniqueRooms = [...new Set(students.map((student) => student.room))];
+      console.log(`uniquePrograms`, uniquePrograms);
+      console.log(`uniqueRooms`, uniqueRooms);
+      const studentMovementsForAllRooms = uniqueRooms.map((roomName) => {
+        return {
+          room: roomName,
+          ...getStudentMovementsForARoom(pickedDate, roomName, students),
+        };
+      });
+      const sorted = sortBy(studentMovementsForAllRooms, [
+        (studentMovement) =>
+          programAgeRange[getMatchedPrograms(studentMovement.room)[0]]?.min ||
+          0,
+        "room",
+      ]);
+      setStudentMovements(sorted);
+      console.log(`newStudentStats`, studentMovementsForAllRooms);
+    }
+  }, [data, pickedDate]);
 
   return (
     <div className={styles.container}>
