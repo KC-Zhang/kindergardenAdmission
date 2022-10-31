@@ -38,7 +38,7 @@ const AddAStudentForm: FC<{ addStudentRecordHandle: (student: Omit<CSVRow, "id">
   }
   return (
     <form>
-      <Grid container spacing={5} marginTop={0} marginLeft={0}>
+      <Grid container spacing={5} marginTop={3} marginLeft={0}>
         <div>
           <FormLabel sx={{marginLeft: 2, marginRight: 2}}>First Name</FormLabel>
           <Input type="text" value={student.firstName}
@@ -56,13 +56,13 @@ const AddAStudentForm: FC<{ addStudentRecordHandle: (student: Omit<CSVRow, "id">
           </select>
         </div>
         <div>
-          <FormLabel sx={{ marginRight: 2}}>Date of Birth</FormLabel>
+          <FormLabel>Date of Birth</FormLabel>
           <DatePicker selected={student.dateOfBirth} onChange={(date:Date) => setStudent({...student, dateOfBirth: date})}/>
         </div>
         <Button
+          sx={{marginLeft: -5}}
           variant="contained"
           onClick={onsubmit}
-
         >Add</Button>
       </Grid>
     </form>

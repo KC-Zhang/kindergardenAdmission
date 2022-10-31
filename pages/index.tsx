@@ -74,7 +74,7 @@ const Home: NextPage = () => {
           Welcome to{" "}
         </Typography>
         <Typography variant="h4" textAlign="center">
-          Kindergarten Admission Scheduler
+          Jacombs CEFA Early Learning Admission Scheduler - Richmond, BC
         </Typography>
         <Box alignSelf="center" marginTop={5} marginBottom={2}>
           <Typography variant="h6" textAlign="center" color="red">
