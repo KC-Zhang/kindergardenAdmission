@@ -13,14 +13,13 @@ export const getStudentMovementsForARoom= (pickedDate:Date, room:string, student
   const roomStudents = students.filter(student => student.room === room)
   const studentsYoungerThanMaxAge = roomStudents.filter(student => {
     const room = student.room;
-    console.log(programAgeRange)
     const ageRange = programAgeRange[findKeysIncludedInKeyword(programAgeRange, room)[0] as keyof typeof programAgeRange];
-    return student.age < ageRange.max
+    return student.ageInDays < ageRange.max *365 - 60
   })
   const studentsOlderThanMaxAge = roomStudents.filter(student => {
     const room = student.room;
     const ageRange = programAgeRange[findKeysIncludedInKeyword(programAgeRange, room)[0] as keyof typeof programAgeRange];
-    return student.age >= ageRange.max
+    return student.ageInDays >= ageRange.max*365 -60
   })
   return {remainingStudents:studentsYoungerThanMaxAge, graduatedStudents:studentsOlderThanMaxAge}
 }

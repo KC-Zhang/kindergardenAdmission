@@ -34,9 +34,6 @@ const CSV: FC<{setData:  Dispatch<SetStateAction<[][] | null>>}> = ({setData}) =
       <CSVReader
         onUploadAccepted={(results: any) => {
           setData(results.data);
-          console.log('---------------------------');
-          console.log(results);
-          console.log('---------------------------');
         }}
       >
         {({

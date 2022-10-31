@@ -2,20 +2,22 @@ import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useEffect, useState } from "react";
+import {FC, useEffect, useState} from "react";
 import CSV from "../components/CSV";
 import CSVDataGrid from "../components/table/CSVDataGrid";
 import { getStudentMovementsForARoom } from "../src/calculationCore";
 import {
-  cleanupProgramNames,
+  cleanupProgramNames, CSVRowToStudent,
   getMatchedPrograms,
   processCSVData,
 } from "../src/dataCleaning";
-import { Student, StudentMovement } from "../src/interfaces";
+import {CSVRow, Student, StudentMovement} from "../src/interfaces";
 import OutputDataGrid from "../components/table/outputDatagrid";
 import { Grid, Typography, Box } from "@mui/material";
 import { programAgeRange } from "../src/configs";
 import { sortBy } from "lodash";
+
+
 
 const Home: NextPage = () => {
   const [pickedDate, setPickedDate] = useState<Date>(new Date());
@@ -23,16 +25,29 @@ const Home: NextPage = () => {
   const [studentMovements, setStudentMovements] = useState<StudentMovement[]>(
     []
   );
+  const [addedStudentCSVRow, setAddedStudentCSVRow] = useState<Omit<CSVRow, "id">>();
+
+  const [students, setStudents] = useState<Student[]>([]);
 
   useEffect(() => {
-    if (data?.length && pickedDate) {
-      const students: Student[] = processCSVData(data, pickedDate);
-      const uniquePrograms = [
-        ...new Set(students.map((student) => student.program)),
-      ];
+    if (data?.length) {
+      let students_: Student[] = processCSVData(data, pickedDate);
+      setStudents(students_);
+    }
+  }, [data]);
+  useEffect(
+    () => {
+      if (addedStudentCSVRow) {
+        const newStudents = [...students, CSVRowToStudent(addedStudentCSVRow, pickedDate)];
+        setStudents(newStudents);
+      }
+    }, [addedStudentCSVRow]
+  )
+
+  useEffect(() => {
+    if (students?.length && pickedDate) {
       const uniqueRooms = [...new Set(students.map((student) => student.room))];
-      console.log(`uniquePrograms`, uniquePrograms);
-      console.log(`uniqueRooms`, uniqueRooms);
+      console.log("students", students);
       const studentMovementsForAllRooms = uniqueRooms.map((roomName) => {
         return {
           room: roomName,
@@ -45,10 +60,10 @@ const Home: NextPage = () => {
           0,
         "room",
       ]);
+      console.log("sorted", sorted);
       setStudentMovements(sorted);
-      console.log(`newStudentStats`, studentMovementsForAllRooms);
     }
-  }, [data, pickedDate]);
+  }, [pickedDate, students]);
 
   return (
     <div className={styles.container}>
@@ -83,7 +98,9 @@ const Home: NextPage = () => {
           <CSV setData={setData}></CSV>
         </Box>
         {data ? (
-          <CSVDataGrid data={data} title={"Raw Input Data"}></CSVDataGrid>
+          <>
+            <CSVDataGrid data={data} title={"Raw Input Data"} setAddedStudentCSVRow={setAddedStudentCSVRow}></CSVDataGrid>
+          </>
         ) : (
           <></>
         )}
@@ -91,7 +108,7 @@ const Home: NextPage = () => {
           studentMovements.map((studentMovement, index) => {
             return (
               <>
-                <Typography variant="h5" textAlign="center">
+                <Typography variant="h5" textAlign="center" fontSize='xxx-large'>
                   {studentMovement.room}
                 </Typography>
                 <Grid container spacing={2} key={index}>
@@ -116,7 +133,7 @@ const Home: NextPage = () => {
                   >
                     <OutputDataGrid
                       students={studentMovement.graduatedStudents}
-                      title={"Graduated"}
+                      title={"Graduated - 60 day buffer"}
                     ></OutputDataGrid>
                   </Grid>
                 </Grid>
