@@ -21,7 +21,7 @@ const AddAStudentForm: FC<{ addStudentRecordHandle: (student: Omit<CSVRow, "id">
   useEffect(
     () => {
       setStudent({...student, room: uniqueRooms[0]});
-    }, [uniqueRooms]
+    }, [uniqueRooms, setStudent]
   )
 
   const onsubmit = (e: any) => {

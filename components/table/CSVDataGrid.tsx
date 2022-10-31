@@ -6,6 +6,9 @@ import {columns} from "./common";
 import {CSVRow, Student} from "../../src/interfaces";
 import AddAStudentForm from "../addAStudentForm";
 import {Alert, Snackbar} from "@mui/material";
+import {sortBy} from "lodash";
+import {programAgeRange} from "../../src/configs";
+import {getMatchedPrograms} from "../../src/dataCleaning";
 
 const formatData = (data: string[][]) => {
   return data.slice(1).map((row, index) => {
@@ -36,7 +39,13 @@ const CSVDataGrid: FC<{ data: never[][]; title: string, setAddedStudentCSVRow:  
     const rows = formatData(data);
     setRows(rows);
     const uniqueRooms = [...new Set(rows.map((student) => student.room))];
-    setUniqueRooms(uniqueRooms);
+    const sorted = sortBy(uniqueRooms, [
+      (room) =>
+        programAgeRange[getMatchedPrograms(room)[0]]?.min ||
+        0,
+      (room) => room,
+    ]);
+    setUniqueRooms(sorted);
   }, [data]);
 
   const addStudentRecordHandle = (student: Omit<CSVRow, "id">) => {

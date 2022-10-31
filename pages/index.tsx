@@ -34,14 +34,14 @@ const Home: NextPage = () => {
       let students_: Student[] = processCSVData(data, pickedDate);
       setStudents(students_);
     }
-  }, [data]);
+  }, [data, pickedDate]);
   useEffect(
     () => {
       if (addedStudentCSVRow) {
         const newStudents = [...students, CSVRowToStudent(addedStudentCSVRow, pickedDate)];
         setStudents(newStudents);
       }
-    }, [addedStudentCSVRow]
+    }, [addedStudentCSVRow, pickedDate]
   )
 
   useEffect(() => {
